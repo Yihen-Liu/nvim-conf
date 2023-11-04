@@ -1,12 +1,32 @@
-:set number
-:set relativenumber
-:set autoindent
-:set tabstop=4
-:set shiftwidth=4
-:set smarttab
-:set softtabstop=4
-:set mouse=a
+"""""""""""""""快捷键"""""""""""""""
+"shift+k: 显示函数帮助信息
+""""""""""""""""""""""""""""""""""""
 
+set number
+set relativenumber
+set autoindent
+set tabstop=4
+set shiftwidth=4
+set smarttab
+set softtabstop=4
+set mouse=a
+
+" 历史容量
+set history=1000
+
+"开启真彩色
+set termguicolors
+
+"使用语法高亮定义代码折叠
+set foldmethod=syntax
+
+"打开文件是默认不折叠代码
+set foldlevelstart=99
+
+" 禁止生成临时文件
+"set noswapfile
+" 禁止高亮search结果, 目前可以通过 ,k 快捷键引入高亮能力
+set nohlsearch
 
 "重新设置neovim的前导键
 let mapleader = ","
@@ -46,6 +66,8 @@ Plug 'vim-airline/vim-airline-themes' "Status bar themes
 "XXX for compatible with vim (parsing ~/.NERDTreeBookmarks)
 "Plug 'scrooloose/nerdtree'
 Plug 'preservim/nerdtree' "NerdTree
+" 在nerdtree上显示文件的git状态
+Plug 'Xuyuanp/nerdtree-git-plugin'
 
 Plug 'tpope/vim-surround' "Surrounding ysw
 Plug 'tpope/vim-fugitive' "git
@@ -57,7 +79,12 @@ Plug 'lfv89/vim-interestingwords'
 "为了让coc可以支持CPP，需要执行 :CocInstall coc-clangd
 "如果没有安装clangd，可以继续执行: CocCommand clangd.install
 Plug 'neoclide/coc.nvim', {'branch': 'release'}  "code completion
+
+
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' } "for golang
+"使用quickfix显示golang语法Error
+let g:go_list_type = "quickfix"
+
 
 "为了可以支持C语言，需要安装ccls, :CocInstall coc-ccls
 "然后配置coc-settings.json文件,
@@ -79,6 +106,13 @@ Plug 'morhetz/gruvbox'  "colorshceme
 
 "mm mi ma mc mn mp
 Plug 'MattesGroeger/vim-bookmarks'
+"自动保存书签
+let g:bookmark_auto_save = 1 
+"书签自动保存的位置
+let g:bookmark_auto_save_file = '~/.bookmarks'
+"在quickfix中选择书签后，自动关闭quickfix
+let g:bookmark_auto_close = 1
+"nmap ml <Plug>BookmarkShowAll
 
 "copilot插件安装，安装好之后，执行 :Copilot setup 设置copilot授权码
 Plug 'github/copilot.vim'
@@ -126,6 +160,12 @@ nmap <S-tab> :bp<CR>
 "nnoremap <C-n> :NERDTree<CR>
 "nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <silent> <F2> :NERDTreeToggle<CR>
+
+"打开管理窗口并将光标定位到当前文件
+nnoremap <silent> <leader>f :NERDTreeFind<cr>
+
+"当NERDTree为剩下的唯一窗口时自动关闭
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 autocmd vimenter * NERDTree "打开nvim的时候，自动打开nerdtree
 let g:NERDTreeWinSize=35
@@ -198,13 +238,15 @@ let g:coc_settings = {
 " 启动时自动focus
 let g:tagbar_autofocus=1
 let g:tagbar_width=35
+"当是如下文件类型时，自动打开Tagbar
+"autocmd BufReadPost *.cpp,*.c,*.h,*.cc,*.cxx,*.go,*.py,*.php call tagbar#autoopen() 
 
 " <F10>打开/关闭Tagbar
 nnoremap <silent> <F10> :TagbarToggle<CR>
 
 
 """"""""""""""""""""""""""""""""""
-"Plug 'lfv89/vim-interestingwords' 配置
+"Plug 'lfv89/vim-interestingwords' 给光标所在的单词着色
 """"""""""""""""""""""""""""""""""
 nnoremap <silent> <leader>k :call InterestingWords('n')<cr>
 vnoremap <silent> <leader>k :call InterestingWords('v')<cr>
@@ -213,5 +255,24 @@ nnoremap <silent> <leader>K :call UncolorAllWords()<cr>
 nnoremap <silent> n :call WordNavigation(1)<cr>
 nnoremap <silent> N :call WordNavigation(0)<cr>
 
-let g:interestingWordsTermColors = ['154', '121', '211', '137', '214', '222']
-let g:interestingWordsGUIColors = ['#8CCBEA', '#A4E57E', '#FFDB72', '#FF7272', '#FFB3FF', '#9999FF']
+let g:interestingWordsTermColors = ['154', '121', '211', '137', '214', '222', "172", '144', '191']
+let g:interestingWordsGUIColors = ['#8CCBEA', '#A4E57E', '#FFDB72', '#FF7272', '#FFB3FF', '#9999FF', '#CC8AA2', '#DCC2E5', '#B11E2F']
+
+
+""""""""""""""""""""""""""""""""""
+"Plug 'nerdtree-git-plugin' 配置
+""""""""""""""""""""""""""""""""""
+let g:NERDTreeGitStatusIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ "Unknown"   : "?"
+    \ }
+
+"设置状态栏颜色主题
+let g:airline_theme="molokai"
