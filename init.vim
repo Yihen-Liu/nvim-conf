@@ -24,9 +24,9 @@ set foldmethod=syntax
 set foldlevelstart=99
 
 " 禁止生成临时文件
-"set noswapfile
+set noswapfile
 " 禁止高亮search结果, 目前可以通过 ,k 快捷键引入高亮能力
-set nohlsearch
+"set nohlsearch
 
 "重新设置neovim的前导键
 let mapleader = ","
@@ -106,16 +106,15 @@ Plug 'morhetz/gruvbox'  "colorshceme
 
 "mm mi ma mc mn mp
 Plug 'MattesGroeger/vim-bookmarks'
-"自动保存书签
-let g:bookmark_auto_save = 1 
-"书签自动保存的位置
-let g:bookmark_auto_save_file = '~/.bookmarks'
-"在quickfix中选择书签后，自动关闭quickfix
-let g:bookmark_auto_close = 1
-"nmap ml <Plug>BookmarkShowAll
 
 "copilot插件安装，安装好之后，执行 :Copilot setup 设置copilot授权码
 Plug 'github/copilot.vim'
+
+"括号显示增强
+Plug 'luochen1990/rainbow'
+
+"专业处理代码错误
+Plug 'dense-analysis/ale'
 
 call plug#end()
 
@@ -136,20 +135,15 @@ nmap <silent> gr <Plug>(coc-references)
 let g:buffergator_viewport_split_policy = "B"
 let g:buffergator_autoupdate = 1
 
-"bookmarks setting
-let g:bookmark_highlight_lines = 1
-let g:bookmark_save_per_working_dir = 1
-let g:bookmark_auto_save = 1
-let g:bookmark_display_annotation = 1
-
-
 colorscheme gruvbox
 "colorscheme desert 
 "colorscheme moonlight
 "colorscheme monokai
 "colorscheme emerald
 
-let g:airline_theme='gruvbox' " 设置主题
+"设置状态栏颜色主题
+"https://github.com/vim-airline/vim-airline-themes/blob/master/autoload/airline/themes/base16_monokai.vim
+let g:airline_theme = "molokai"
 let g:airline_powerline_fonts = 1 "开启powerline字体显示，例如状态栏上的小三角图标
 let g:airline#extensions#tabline#enabled=1 "顶部tab显示
 
@@ -244,7 +238,6 @@ let g:tagbar_width=35
 " <F10>打开/关闭Tagbar
 nnoremap <silent> <F10> :TagbarToggle<CR>
 
-
 """"""""""""""""""""""""""""""""""
 "Plug 'lfv89/vim-interestingwords' 给光标所在的单词着色
 """"""""""""""""""""""""""""""""""
@@ -274,5 +267,77 @@ let g:NERDTreeGitStatusIndicatorMapCustom = {
     \ "Unknown"   : "?"
     \ }
 
-"设置状态栏颜色主题
-let g:airline_theme="molokai"
+""""""""""""""""""""""""""""""""""
+" rainbow配置
+""""""""""""""""""""""""""""""""""
+" rainbow激活
+let g:rainbow_active = 1
+" darkwhite是原色, guifgs配置的是nvim的颜色
+" lightmagenta颜色比较亮，看起来比较方便 seagreen3
+let g:rainbow_conf = {
+\	'guifgs': ['darkyellow', 'darkorange3', 'seagreen', 'lightpink'],
+\	'ctermfgs': ['white', 'yellow', 'cyan', 'magenta'],
+\}
+
+
+""""""""""""""""""""""""""""""""""
+"bookmarks setting
+""""""""""""""""""""""""""""""""""
+let g:bookmark_highlight_lines = 1
+let g:bookmark_save_per_working_dir = 1
+"自动保存书签
+let g:bookmark_auto_save = 1
+let g:bookmark_display_annotation = 1
+"书签自动保存的位置
+let g:bookmark_auto_save_file = '~/.bookmarks'
+"在quickfix中选择书签后，自动关闭quickfix
+let g:bookmark_auto_close = 1
+"nmap ml <Plug>BookmarkShowAll
+
+""""""""""""""""""""""""""""""""""
+"quickfix setting
+""""""""""""""""""""""""""""""""""
+"前导键 + q  打开/关闭quickfix
+nnoremap <leader>q :call QuickfixToggle()<cr>
+
+let g:quickfix_is_open = 0
+
+function! QuickfixToggle()
+    if g:quickfix_is_open
+        cclose
+        let g:quickfix_is_open = 0
+    else
+        copen
+        let g:quickfix_is_open = 1
+    endif
+endfunction
+
+""""""""""""""""""""""""""""""""""
+"Plug 'dense-analysis/ale' 设置
+""""""""""""""""""""""""""""""""""
+"let g:ale_set_highlights = 1
+let g:ale_set_quickfix = 1
+"自定义error和warning图标
+let g:ale_sign_error = '✗'
+let g:ale_sign_warning = '⚡'
+"在vim自带的状态栏中整合ale
+"let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']
+"显示Linter名称,出错或警告等相关信息
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+"打开文件时进行检查
+let g:ale_lint_on_enter = 1
+" Set this. Airline will handle the rest.
+let g:airline#extensions#ale#enabled = 1
+"普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
+nmap sp <Plug>(ale_previous_wrap)
+nmap sn <Plug>(ale_next_wrap)
+"<Leader>s触发/关闭语法检查
+" nmap <Leader>l :ALEToggle<CR>
+"<Leader>d查看错误或警告的详细信息
+nmap <Leader>d :ALEDetail<CR>
+let g:ale_linters = {
+    \ 'go': ['golint', 'go vet', 'go fmt'],
+    \ }
+
