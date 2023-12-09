@@ -1,10 +1,20 @@
 {
 "diagnostic.displayByAle": true,
 "languageserver": {
-  "coc-clangd": {
-    "command": "clangd",
-    "rootPatterns": ["compile_flags.txt", "compile_commands.json"],
-    "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"]
+  "ccls": {
+    "command": "ccls",
+    "rootPatterns": ["compile_flags.txt", "compile_commands.json", ".git/"],
+    "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"],
+	"initializationOptions": {
+        "cache": {
+          "directory": "~/.ccls-cache"
+        },
+		"clang": {                                      
+                 "extraArgs": [                          
+					 "-I/Library/Developer/CommandLineTools/usr/include/c++/v1"     
+					 ]                                       
+                 }
+      }
   }
 }
 }

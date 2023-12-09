@@ -51,6 +51,9 @@ call plug#begin()
 "tag导航插件
 Plug 'majutsushi/tagbar'
 
+"可见屏幕捏，快速跳转
+Plug 'phaazon/hop.nvim'
+
 "安装buffer 浏览器
 "\<Leader\>be normal open
 "\<Leader\>bt toggle open / close
@@ -116,7 +119,11 @@ Plug 'luochen1990/rainbow'
 "专业处理代码错误
 Plug 'dense-analysis/ale'
 
+Plug 'preservim/nerdcommenter'
 call plug#end()
+
+"显示当前文件的全路径
+nnoremap <C-g>  1<C-g>
 
 "Tab键可以选择coc.nvim 下拉内容
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
@@ -229,8 +236,12 @@ let g:coc_settings = {
 """"""""""""""""""""""""""""""""""
 " tagbar配置
 """"""""""""""""""""""""""""""""""
+" 使用 ctags 作为标签生成器
+"let g:tagbar_type_ctags_bin = 'ctags'
 " 启动时自动focus
-let g:tagbar_autofocus=1
+let g:tagbar_autofocus = 1
+let g:tagbar_autoclose = 0
+" let g:tagbar_autoshow = 1
 let g:tagbar_width=35
 "当是如下文件类型时，自动打开Tagbar
 "autocmd BufReadPost *.cpp,*.c,*.h,*.cc,*.cxx,*.go,*.py,*.php call tagbar#autoopen() 
@@ -337,3 +348,14 @@ nmap <Leader>d :ALEDetail<CR>
 let g:ale_linters = {
     \ 'go': ['golint', 'go vet', 'go fmt'],
     \ }
+
+""""""""""""""""""""""""""""""""""
+" Plug 'scrooloose/nerdcommenter' 设置 (加注释)
+""""""""""""""""""""""""""""""""""
+" <leader>cc   加注释
+" <leader>cu   解注释
+
+" 注释的时候自动加个空格
+let g:NERDSpaceDelims=1
+
+
