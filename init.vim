@@ -120,6 +120,10 @@ Plug 'luochen1990/rainbow'
 Plug 'dense-analysis/ale'
 
 Plug 'preservim/nerdcommenter'
+
+"rsync插件，在项目目录的底层放置 .vim-arsync配置内容
+" https://github.com/KenN7/vim-arsync
+Plug 'kenn7/vim-arsync'
 call plug#end()
 
 "显示当前文件的全路径
@@ -169,7 +173,8 @@ nnoremap <silent> <leader>f :NERDTreeFind<cr>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 autocmd vimenter * NERDTree "打开nvim的时候，自动打开nerdtree
-let g:NERDTreeWinSize=35
+let g:NERDTreeWinSize=31
+"let g:NERDTreeWinSize=28
 let g:NERDTreeDirArrowExpandable="+"
 let g:NERDTreeDirArrowCollapsible="-"
 let g:NERDTreeBookmarksFile=expand('$HOME').'/.NERDTreeBookmarks.nvim'
@@ -232,6 +237,8 @@ let g:coc_settings = {
 \     "--header-insertion-decorators"
 \   ],
 \ }
+"忽略cpp文件中的未使用函数及变量警告, 好像不生效，参建bitcoin
+let g:ale_cpp_clang_options = '-Wall -Wextra -Werror -Eno-unused-variable -Eno-unused-function'
 
 """"""""""""""""""""""""""""""""""
 " tagbar配置
@@ -242,7 +249,8 @@ let g:coc_settings = {
 let g:tagbar_autofocus = 1
 let g:tagbar_autoclose = 0
 " let g:tagbar_autoshow = 1
-let g:tagbar_width=35
+let g:tagbar_width=31
+"let g:tagbar_width=28
 "当是如下文件类型时，自动打开Tagbar
 "autocmd BufReadPost *.cpp,*.c,*.h,*.cc,*.cxx,*.go,*.py,*.php call tagbar#autoopen() 
 
@@ -347,7 +355,11 @@ nmap <Leader>d :ALEDetail<CR>
 
 let g:ale_linters = {
     \ 'go': ['golint', 'go vet', 'go fmt'],
+    \ 'cpp': ['clang'],
     \ }
+
+" 忽略cpp中未使用参数的报警信息
+let g:ale_cpp_clang_options = '-Wall -Wextra -Werror -Wunused-variable  -Wunused-function'
 
 """"""""""""""""""""""""""""""""""
 " Plug 'scrooloose/nerdcommenter' 设置 (加注释)
