@@ -89,9 +89,8 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' } "for golang
 let g:go_list_type = "quickfix"
 
 
-"为了可以支持C语言，需要安装ccls, :CocInstall coc-ccls
+"为了可以支持C语言，需要安装clangd, :CocInstall coc-clangd
 "然后配置coc-settings.json文件,
-"目前系统已经安装了ccls，但是coc-ccls安装失败，故作罢；
 
 "为了让coc支持Rust，需要提前执行 :CocInstall coc-rust-analyzer,
 "该插件会自动安装rust-analyzer可执行文件
@@ -119,11 +118,12 @@ Plug 'luochen1990/rainbow'
 "专业处理代码错误
 Plug 'dense-analysis/ale'
 
+"代码注释的管理
 Plug 'preservim/nerdcommenter'
 
 "rsync插件，在项目目录的底层放置 .vim-arsync配置内容
 " https://github.com/KenN7/vim-arsync
-Plug 'kenn7/vim-arsync'
+"Plug 'kenn7/vim-arsync'
 call plug#end()
 
 "显示当前文件的全路径
@@ -169,12 +169,15 @@ nnoremap <silent> <F2> :NERDTreeToggle<CR>
 "打开管理窗口并将光标定位到当前文件
 nnoremap <silent> <leader>f :NERDTreeFind<cr>
 
-"当NERDTree为剩下的唯一窗口时自动关闭
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+"当NERDTree为剩下的唯一窗口时自动关闭, 为了适配BufOnly自定义命令，关掉这个配置
+"autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+"关闭所有的buffer, 除了当前的buffer
+command! BufOnly execute 'let current_buf = bufnr("%")' | bufdo if bufnr('%') != current_buf | bdelete | endif
 
 autocmd vimenter * NERDTree "打开nvim的时候，自动打开nerdtree
-let g:NERDTreeWinSize=31
-"let g:NERDTreeWinSize=28
+"let g:NERDTreeWinSize=31
+let g:NERDTreeWinSize=28
 let g:NERDTreeDirArrowExpandable="+"
 let g:NERDTreeDirArrowCollapsible="-"
 let g:NERDTreeBookmarksFile=expand('$HOME').'/.NERDTreeBookmarks.nvim'
@@ -225,18 +228,20 @@ let g:LanguageClient_autoStart = 'rust'
 let g:coc_global_extensions = [
 \ 'coc-clangd',
 \ ]
-let g:coc_settings = {
-\ "clangd.path": "/Library/Developer/CommandLineTools/usr/bin/clangd",
-\ "clangd.arguments": [
-\     "--background-index",
-\     "--completion-style=bundled",
-\     "--header-insertion=iwyu",
-\     "--suggest-missing-includes",
-\     "--clang-tidy",
-\     "--cross-file-rename",
-\     "--header-insertion-decorators"
-\   ],
-\ }
+"let g:coc_settings = {
+"\ "clangd.path": "/Library/Developer/CommandLineTools/usr/bin/clangd",
+"\ "clangd.arguments": [
+"\     "--background-index",
+"\     "--completion-style=bundled",
+"\     "--header-insertion=iwyu",
+"\     "--clang-tidy",
+"\     "--cross-file-rename",
+"\     "--header-insertion-decorators"
+"\   ],
+"\ }
+
+
+"--suggest-missing-includes",
 "忽略cpp文件中的未使用函数及变量警告, 好像不生效，参建bitcoin
 let g:ale_cpp_clang_options = '-Wall -Wextra -Werror -Eno-unused-variable -Eno-unused-function'
 
@@ -334,6 +339,7 @@ endfunction
 """"""""""""""""""""""""""""""""""
 "Plug 'dense-analysis/ale' 设置
 "在coc.nvim配置文件中添加 "diagnostic.displayByAle": true , 否则插件之间会有冲突
+"https://github.com/dense-analysis/ale/blob/master/doc/ale-c.txt 帮助文档
 """"""""""""""""""""""""""""""""""
 "显示Linter名称,出错或警告等相关信息
 let g:ale_echo_msg_error_str = 'E'
@@ -358,9 +364,17 @@ let g:ale_linters = {
     \ 'cpp': ['clang'],
     \ }
 
+" Only run linters named in ale_linters settings.
+let g:ale_linters_explicit = 1
+
 " 忽略cpp中未使用参数的报警信息
 let g:ale_cpp_clang_options = '-Wall -Wextra -Werror -Wunused-variable  -Wunused-function'
 
+" ale忽略对.h文件的检查
+autocmd BufRead,BufNewFile *.h let b:ale_enabled = 0
+
+"禁用显示错误或警告信息, 只在底部栏显示
+let g:ale_virtualtext_cursor = 'disabled'
 """"""""""""""""""""""""""""""""""
 " Plug 'scrooloose/nerdcommenter' 设置 (加注释)
 """"""""""""""""""""""""""""""""""
@@ -370,4 +384,27 @@ let g:ale_cpp_clang_options = '-Wall -Wextra -Werror -Wunused-variable  -Wunused
 " 注释的时候自动加个空格
 let g:NERDSpaceDelims=1
 
+
+""""""""""""""""""""""""""""""""""
+" Plug 'tpope/vim-surround'
+"help reference link: https://yyq123.github.io/learn-vim/learn-vim-plugin-surround.html
+""""""""""""""""""""""""""""""""""
+"ys	添加环绕字符
+"yS	添加环绕字符并拆分新行
+"yss 为整行添加环绕字符
+"ySS 为整行添加环绕字符并拆分新行
+"cs	修改环绕字符
+"cS	修改环绕字符并拆分新行
+"ds	删除环绕字符
+"
+"surround插件可以识别并处理以下目标实体：
+" ( )
+" { }
+" [ ]
+" < >
+" `
+" "
+" '
+" t（标签）
+" w（单词）
 
