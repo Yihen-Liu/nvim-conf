@@ -49,7 +49,7 @@ let mapleader = ","
 
 call plug#begin()
 "tag导航插件
-Plug 'majutsushi/tagbar'
+Plug 'preservim/tagbar'
 
 "可见屏幕捏，快速跳转
 Plug 'phaazon/hop.nvim'
@@ -83,20 +83,25 @@ Plug 'lfv89/vim-interestingwords'
 "如果没有安装clangd，可以继续执行: CocCommand clangd.install
 Plug 'neoclide/coc.nvim', {'branch': 'release'}  "code completion
 
-
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' } "for golang
 "使用quickfix显示golang语法Error
 let g:go_list_type = "quickfix"
 
+"记录代码片段; follow latest release and install jsregexp.
+"replace <CurrentMajor> by the latest released major (first number of latest release), which is tag value
+Plug 'L3MON4D3/LuaSnip', {'tag': 'v2.*', 'do': 'make install_jsregexp'} " 
 
 "为了可以支持C语言，需要安装clangd, :CocInstall coc-clangd
 "然后配置coc-settings.json文件,
 
 "为了让coc支持Rust，需要提前执行 :CocInstall coc-rust-analyzer,
-"该插件会自动安装rust-analyzer可执行文件
-Plug 'rust-lang/rust.vim'  "安装rust 语法vim插件
-Plug 'simrat39/rust-tools.nvim'
-
+"该插件会自动安装rust-analyzer可执行文件 
+"
+"
+"以下两个插件好像是多余的？ 因为安装了之后，会报告tagbar失效
+"Plug 'rust-lang/rust.vim'  "安装rust 语法vim插件
+Plug 'mrcjkb/rustaceanvim'
+"
 "fzf#install() makes sure that you have the latest binary, but it's optional, so you can omit it if you use a plugin manager that doesn't support hooks.
 ":Files :Tags :Ag :Rg
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -175,6 +180,9 @@ nnoremap <silent> <leader>f :NERDTreeFind<cr>
 "关闭所有的buffer, 除了当前的buffer
 command! BufOnly execute 'let current_buf = bufnr("%")' | bufdo if bufnr('%') != current_buf | bdelete | endif
 
+"映射命令模式下， qq退出neovim
+cnoremap qq qa
+
 autocmd vimenter * NERDTree "打开nvim的时候，自动打开nerdtree
 "let g:NERDTreeWinSize=31
 let g:NERDTreeWinSize=28
@@ -213,11 +221,12 @@ let g:rust_doc_command = "rustdoc"
 let g:rustc_command = "rustc"
 let g:rust_use_language_server = 1
 let g:LanguageClient_serverCommands = {
-            \ 'rust': ['rustup', 'run', 'stable', 'rls'],
+            \ 'rust': ['rust-analyzer'],
             \ }
-let g:LanguageClient_loggingLevel = 'INFO'
+"let g:LanguageClient_loggingLevel = 'WARN'
 let g:LanguageClient_autoStart = 1
 let g:LanguageClient_autoStart = 'rust'
+let g:ale_linters = {'rust': ['analyzer']}
 
 
 """"""""""""""""""""""""""""""""""
@@ -253,6 +262,7 @@ let g:ale_cpp_clang_options = '-Wall -Wextra -Werror -Eno-unused-variable -Eno-u
 " 启动时自动focus
 let g:tagbar_autofocus = 1
 let g:tagbar_autoclose = 0
+let g:tagbar_use_cache = 0
 " let g:tagbar_autoshow = 1
 let g:tagbar_width=31
 "let g:tagbar_width=28
@@ -362,6 +372,7 @@ nmap <Leader>d :ALEDetail<CR>
 let g:ale_linters = {
     \ 'go': ['golint', 'go vet', 'go fmt'],
     \ 'cpp': ['clang'],
+    \ 'rust': ['cargo'],
     \ }
 
 " Only run linters named in ale_linters settings.

@@ -16,6 +16,11 @@
 					 ]
                  }
       }
+  },
+  "rust": {
+    "command": "rust-analyzer",
+    "rootPatterns": ["Cargo.toml", ".git"],
+    "filetypes": ["rust"]
   }
 },
 "snippets.ultisnips.pythonPrompt": false
