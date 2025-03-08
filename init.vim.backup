@@ -104,6 +104,7 @@ Plug 'mrcjkb/rustaceanvim'
 "
 "fzf#install() makes sure that you have the latest binary, but it's optional, so you can omit it if you use a plugin manager that doesn't support hooks.
 ":Files :Tags :Ag :Rg
+" 系统要提前安装fzf和ripgrep
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
@@ -395,6 +396,8 @@ let g:ale_virtualtext_cursor = 'disabled'
 " 注释的时候自动加个空格
 let g:NERDSpaceDelims=1
 
+" 使用xclip复制到系统剪贴板, brew install xclip
+set clipboard+=unnamedplus
 
 """"""""""""""""""""""""""""""""""
 " Plug 'tpope/vim-surround'
