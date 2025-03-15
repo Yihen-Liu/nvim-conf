@@ -5,7 +5,7 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.smarttab = true
 vim.opt.softtabstop = 4
-
+ 
 -- 鼠标可拖拽
 vim.opt.mouse = 'a'
 
@@ -80,9 +80,6 @@ require("lazy").setup({
 	-- 安装 nerdcommenter 插件, 自动加注释
 	{'scrooloose/nerdcommenter'},
 
-	-- 安装 rainbow 插件, 括号颜色增强
-	{'luochen1990/rainbow'},
-
 	-- 安装 coc.nvim 插件
     { 'neoclide/coc.nvim', branch = 'release' },
 
@@ -98,8 +95,9 @@ require("lazy").setup({
 	-- buffer 管理器, 默认快捷键是 leader+b
 	{'jeetsukumaran/vim-buffergator'},
 
+	--  自动补全括号、引号等成对符号，提高代码编写效率, 输入 (，会自动补全 )等
 	{'jiangmiao/auto-pairs'},
-	
+
 	-- 书签管理器: mm mi ma mc mn mp
 	{'MattesGroeger/vim-bookmarks'},
 
@@ -108,7 +106,7 @@ require("lazy").setup({
 	-- 错误检查插件
 	{'dense-analysis/ale'},
 
-	-- 虚拟terminal插件
+	-- 虚拟terminal插件 F12打开
 	{
 		'voldikss/vim-floaterm',
 		config = function()
@@ -129,21 +127,12 @@ require("lazy").setup({
 		end
 	},
 
-	-- 增强copilot
+	-- 最大化当前屏幕
 	{
-		"CopilotC-Nvim/CopilotChat.nvim",
-		dependencies = {
-		  { "github/copilot.vim" }, -- or zbirenbaum/copilot.lua
-		  { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
+		"szw/vim-maximizer",
+		keys = {
+			{ "<leader>m", ":MaximizerToggle<CR>", desc = "Toggle maximize window" }
 		},
-
-		build = "make tiktoken", -- Only on MacOS or Linux
-
-		opts = {
-		  -- See Configuration section for options
-		},
-
-		-- See Commands section for default commands if you want to lazy load on them
 	},
 
 	--	nvim命令行提示
@@ -170,6 +159,31 @@ require("lazy").setup({
 
 		end
 	}, 
+
+	-- 顶部标签页plugin，:Bo :Bc 命令就是来源于这个插件
+	{
+		'romgrk/barbar.nvim',
+		dependencies = {
+		  -- 'lewis6991/gitsigns.nvim', -- OPTIONAL: for git status
+		  -- 'nvim-tree/nvim-web-devicons', -- OPTIONAL: for file icons
+		},
+		init = function() 
+			vim.g.barbar_auto_setup = false 
+			require('configs.barbar') -- 这里加载映射
+		end,
+		opts = {
+		  icons = {
+			  filetype = {
+				enabled = false, -- 这里禁用文件类型图标, 因为没有安装nvim-web-devicons
+			  }
+		  },
+		},
+  },
+
+  require('plugins.avante'),
+  require('plugins.rainbow'),
+  require("plugins.flash"),
+  require("plugins.miniFiles"),
 })
 
 -- 设置状态栏颜色主题
@@ -285,6 +299,9 @@ vim.cmd([[
   let g:coc_go_use_gopls = 1
 ]])
 
+-- 当新建文件时，reload 重新加载coc.nvim以便发现新建的文件内容
+vim.api.nvim_create_user_command("Reload", "CocRestart", {})
+
 -- 设置 GoTo 代码导航的快捷键映射
 vim.api.nvim_set_keymap('n', 'gd', '<Plug>(coc-definition)', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', 'gy', '<Plug>(coc-type-definition)', { noremap = true, silent = true })
@@ -293,7 +310,7 @@ vim.api.nvim_set_keymap('n', 'gr', '<Plug>(coc-references)', { noremap = true, s
 
 -- vim-go 配置
 vim.cmd([[
-  let g:go_auto_type_info = 1
+  let g:go_auto_type_info = 0  "光标悬停时自动显示类型信息; 0: 关闭； 1：打开
   let g:go_fmt_command = "goimports"
   let g:go_doc_keywordprg = ":GoDoc"
   let g:go_list_type = 'quickfix'  " 显示 Go 错误到 quickfix
@@ -334,6 +351,8 @@ vim.api.nvim_set_keymap('n', 'sn', '<Plug>(ale_next_wrap)', { noremap = true, si
 vim.api.nvim_set_keymap('n', '<Leader>d', ':ALEDetail<CR>', { noremap = true, silent = true })
 -- 禁用 ALE 插件的虚拟文本显示, 仅在底部显示错误信息
 vim.g.ale_virtualtext_cursor = 'disabled'
+-- 在底部，格式化ALE显示消息
+vim.g.ale_echo_msg_format = '[%linter%] %s [%severity%]'
 
 
  -- 重新映射CopilotChat快捷键 --
@@ -348,3 +367,16 @@ vim.api.nvim_create_user_command("Broot", function()
   vim.cmd("FloatermNew --width=0.8 --height=0.8 --autoclose=1 broot")
 end, {})
 
+--barbar.nvim 配置
+-- 命令行模式新增Bc 关闭当前buffer
+vim.api.nvim_create_user_command("Bc", function()
+    vim.cmd("BufferClose")
+end, {})
+
+-- 命令行模式新增Bc 关闭当前buffer
+vim.api.nvim_create_user_command("Bo", function()
+    vim.cmd("BufferCloseAllButCurrent")
+end, {})
+
+-- 绑定快捷键，打开mini.files
+vim.keymap.set("n", "<leader>e", MiniFiles.open, { desc = "打开 mini.files" })

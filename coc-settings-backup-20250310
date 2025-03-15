@@ -2,4 +2,6 @@
 "diagnostic.displayByAle": true,
 "snippets.ultisnips.pythonPrompt": false, 
 "rust-analyzer.diagnostics.disabled": ["inactive-code", "unreachable-label","unlinked-file"],
+  "go.autocompleteUnimportedPackages": true,
+  "go.diagnosticsDelay": "500ms"
 }
