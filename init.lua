@@ -106,7 +106,7 @@ require("lazy").setup({
 	-- 错误检查插件
 	{'dense-analysis/ale'},
 
-	-- 虚拟terminal插件 F12打开
+	-- neovim中的虚拟terminal终端插件 F12打开
 	{
 		'voldikss/vim-floaterm',
 		config = function()
