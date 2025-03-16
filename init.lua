@@ -248,7 +248,7 @@ vim.cmd([[
 ]])
 
 -- 设置 NERDTree 的窗口大小
-vim.g.NERDTreeWinSize = 28
+vim.g.NERDTreeWinSize = 33
 -- 打开 NERDTree 并将光标定位到当前文件
 vim.api.nvim_set_keymap('n', '<leader>f', ':NERDTreeFind<CR>', { noremap = true, silent = true })
 -- 设置可展开和可折叠目录的箭头符号
@@ -350,7 +350,7 @@ vim.api.nvim_set_keymap('n', 'sn', '<Plug>(ale_next_wrap)', { noremap = true, si
 -- 映射 Leader+d 查看错误或警告的详细信息
 vim.api.nvim_set_keymap('n', '<Leader>d', ':ALEDetail<CR>', { noremap = true, silent = true })
 -- 禁用 ALE 插件的虚拟文本显示, 仅在底部显示错误信息
-vim.g.ale_virtualtext_cursor = 'disabled'
+vim.g.ale_virtualtext_cursor = 0 
 -- 在底部，格式化ALE显示消息
 vim.g.ale_echo_msg_format = '[%linter%] %s [%severity%]'
 
