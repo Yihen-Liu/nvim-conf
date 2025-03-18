@@ -77,9 +77,13 @@ require("lazy").setup({
 	-- 安装 vim-interestingwords 插件
 	{'lfv89/vim-interestingwords'},
 
-	-- 安装 nerdcommenter 插件, 自动加注释
-	{'scrooloose/nerdcommenter'},
-
+	-- 安装 Comment 插件, 自动加注释, gc/gb
+	{
+		'numToStr/Comment.nvim',
+		opts = {
+			-- add any options here
+		}
+	},
 	-- 安装 coc.nvim 插件
     { 'neoclide/coc.nvim', branch = 'release' },
 
@@ -101,7 +105,7 @@ require("lazy").setup({
 	-- 书签管理器: mm mi ma mc mn mp
 	{'MattesGroeger/vim-bookmarks'},
 
-	{'github/copilot.vim'},
+	-- {'github/copilot.vim'},
 
 	-- 错误检查插件
 	{'dense-analysis/ale'},
@@ -225,8 +229,6 @@ vim.g.NERDTreeGitStatusIndicatorMapCustom = {
     Unknown   = "?"
 }
 
---vim.g.NERDTreeGitStatusUseNerdFonts = 1
-
 -- 设置 Neovim 使用系统剪贴板
 vim.o.clipboard = 'unnamedplus'
 
@@ -235,12 +237,6 @@ vim.g.NERDSpaceDelims = 1  -- 空格分隔注释符号
 vim.g.NERDCommentEmptyLines = 1  -- 允许对空行加注释
 vim.g.NERDTrimWhitespaces = 1  -- 去除注释后尾部的空格
 vim.g.NERDDefaultAlign = 'left'  -- 默认对齐方式为左对齐
-
--- 设置 <leader>cc 进行加注释
-vim.api.nvim_set_keymap('n', '<leader>cc', ':NERDCommenterComment<CR>', { noremap = true, silent = true })
-
--- 设置 <leader>cu 进行解注释
-vim.api.nvim_set_keymap('n', '<leader>cu', ':NERDCommenterUncomment<CR>', { noremap = true, silent = true })
 
 -- 设置 autocmd 在 Neovim 启动时自动打开 NERDTree
 vim.cmd([[
@@ -353,13 +349,6 @@ vim.api.nvim_set_keymap('n', '<Leader>d', ':ALEDetail<CR>', { noremap = true, si
 vim.g.ale_virtualtext_cursor = 0 
 -- 在底部，格式化ALE显示消息
 vim.g.ale_echo_msg_format = '[%linter%] %s [%severity%]'
-
-
- -- 重新映射CopilotChat快捷键 --
- -- normal 模式下， 前导键+c+t 打开CopilotChat
-vim.api.nvim_set_keymap("n", "<leader>ct", "<cmd>CopilotChat<CR>", { noremap = true, silent = true })
- -- visual 模式下， 前导键+c+t 打开CopilotChat, 以选择的内容为上下文
-vim.api.nvim_set_keymap("v", "<leader>ct", ":'<,'>CopilotChat<CR>", { noremap = true, silent = true })
 
 
 -- 在Floatterm中打开Broot, 当broot退出时，自动关闭Floatterm, 避免残留
