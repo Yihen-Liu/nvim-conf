@@ -80,9 +80,7 @@ require("lazy").setup({
 	-- 安装 Comment 插件, 自动加注释, gc/gb
 	{
 		'numToStr/Comment.nvim',
-		opts = {
-			-- add any options here
-		}
+		opts = {}
 	},
 	-- 安装 coc.nvim 插件
     { 'neoclide/coc.nvim', branch = 'release' },
