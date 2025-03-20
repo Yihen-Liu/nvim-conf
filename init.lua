@@ -5,7 +5,7 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.smarttab = true
 vim.opt.softtabstop = 4
- 
+
 -- 鼠标可拖拽
 vim.opt.mouse = 'a'
 
@@ -103,7 +103,10 @@ require("lazy").setup({
 	-- 书签管理器: mm mi ma mc mn mp
 	{'MattesGroeger/vim-bookmarks'},
 
-	-- {'github/copilot.vim'},
+	{
+		'github/copilot.vim',
+		event = "InsertEnter", -- 进入插入模式时加载
+	},
 
 	-- 错误检查插件
 	{'dense-analysis/ale'},
