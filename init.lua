@@ -66,7 +66,7 @@ require("lazy").setup({
 	{'preservim/nerdtree',dependencies = { "Xuyuanp/nerdtree-git-plugin" }},
 
 	-- 安装 nerdtree-git-plugin 插件, 在nerdtree上显示文件的git状态
-    {'Xuyuanp/nerdtree-git-plugin'},
+    --{'Xuyuanp/nerdtree-git-plugin'},
 
 	-- 安装 vim-surround 插件
 	{'tpope/vim-surround'},
@@ -89,7 +89,7 @@ require("lazy").setup({
     { 'fatih/vim-go', build = ':GoUpdateBinaries' },
 
 	  -- 安装 fzf 插件，并运行安装脚本
-	{ 'junegunn/fzf', run = './install --all' },
+	{ 'junegunn/fzf', build = './install --all' },
 
 	-- 安装 fzf.vim 插件
 	{'junegunn/fzf.vim'},
@@ -185,15 +185,22 @@ require("lazy").setup({
 		},
   },
 
+  {
+	  "neovim/nvim-lspconfig",
+	  config = function()
+		require("lspconfig").gopls.setup({})
+	  end
+  },
+
   require('plugins.avante'),
   require('plugins.rainbow'),
   require("plugins.flash"),
   require("plugins.miniFiles"),
+  require("plugins.rust"),
 })
-
 -- 设置状态栏颜色主题
-vim.g.airline_theme = "molokai"
--- vim.g.airline_theme = "angr"
+-- vim.g.airline_theme = "molokai"
+vim.g.airline_theme = "gruvbox"
 
 -- 开启 powerline 字体显示，例如状态栏上的小三角图标
 vim.g.airline_powerline_fonts = 1
@@ -202,6 +209,7 @@ vim.g.airline_powerline_fonts = 1
 vim.g["airline#extensions#tabline#enabled"] = 1
 
 -- 设置 colorscheme 为 gruvbox
+vim.g.gruvbox_contrast_dark = "medium" -- 可选 "soft"、"medium"、"hard"
 vim.cmd("colorscheme gruvbox")
 
 -- 可选：绑定快捷键打开 tagbar
@@ -347,7 +355,7 @@ vim.api.nvim_set_keymap('n', 'sn', '<Plug>(ale_next_wrap)', { noremap = true, si
 -- 映射 Leader+d 查看错误或警告的详细信息
 vim.api.nvim_set_keymap('n', '<Leader>d', ':ALEDetail<CR>', { noremap = true, silent = true })
 -- 禁用 ALE 插件的虚拟文本显示, 仅在底部显示错误信息
-vim.g.ale_virtualtext_cursor = 0 
+vim.g.ale_virtualtext_cursor =  'disabled'
 -- 在底部，格式化ALE显示消息
 vim.g.ale_echo_msg_format = '[%linter%] %s [%severity%]'
 
